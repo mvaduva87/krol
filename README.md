@@ -1,2 +1,3 @@
 # krol
-web scrapping
+
+Simple web page renderer with crawling capabilities
