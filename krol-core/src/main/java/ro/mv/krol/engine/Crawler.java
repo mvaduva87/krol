@@ -1,5 +1,8 @@
 package ro.mv.krol.engine;
 
+import groovy.lang.Script;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.mv.krol.browser.Browser;
 import ro.mv.krol.browser.HtmlPage;
 import ro.mv.krol.exception.CrawlException;
@@ -15,9 +18,6 @@ import ro.mv.krol.storage.StoredType;
 import ro.mv.krol.util.Args;
 import ro.mv.krol.util.Metadata;
 import ro.mv.krol.util.URLUtils;
-import groovy.lang.Script;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -66,11 +66,9 @@ public class Crawler implements AutoCloseable {
     public int crawl(final Seed seed, Consumer<Page> consumer) throws CrawlException {
         Script crawlScript = compileScriptFor(seed);
         final AtomicInteger processedCount = new AtomicInteger(0);
-        long time = System.currentTimeMillis();
         browser.crawl(seed, crawlScript, htmlPage -> {
-            logger.info("crawl time " + (System.currentTimeMillis() - time));
             try {
-                Page page = createFrom(htmlPage, seed);
+                Page page = createPageFrom(htmlPage, seed);
                 consumer.accept(page);
                 processedCount.incrementAndGet();
             } catch (IOException | RuntimeException e) {
@@ -84,7 +82,7 @@ public class Crawler implements AutoCloseable {
         return count;
     }
 
-    private Page createFrom(HtmlPage htmlPage, Seed origin) throws IOException {
+    protected Page createPageFrom(HtmlPage htmlPage, Seed origin) throws IOException {
         Metadata.transfer(origin.getMetadata(), htmlPage.getMetadata(), false);
         Page.Builder builder = Page.builder();
         builder.withUrl(htmlPage.getUrl());
@@ -93,15 +91,23 @@ public class Crawler implements AutoCloseable {
         builder.withMetadata(htmlPage.getMetadata());
         Map<StoredType, String> locatorMap = pageStorage.store(htmlPage);
         builder.withLocator(locatorMap);
-        try {
-            URL baseURL = URLUtils.getBaseURLOf(htmlPage.getUrl());
-            Document document = documentFactory.createFrom(baseURL, htmlPage.getSource());
-            List<Link> links = extractLinks(document, htmlPage, origin.getSelectorsFor(Selector.Target.LINKS));
-            builder.withLinks(links);
-            List<Resource> resources = extractResources(document, htmlPage, origin.getSelectorsFor(Selector.Target.RESOURCES));
-            builder.withResources(resources);
-        } catch (IOException | RuntimeException e) {
-            logger.warn("failed to process html page document", e);
+        if (origin.canExtract()) {
+            try {
+                URL baseURL = URLUtils.getBaseURLOf(htmlPage.getUrl());
+                Document document = documentFactory.createFrom(baseURL, htmlPage.getSource());
+                List<Selector> linkSelectors = origin.getSelectorsFor(Selector.Target.LINKS);
+                if (linkSelectors != null && !linkSelectors.isEmpty()) {
+                    List<Link> links = extractLinks(document, htmlPage, linkSelectors);
+                    builder.withLinks(links);
+                }
+                List<Selector> resourceSelectors = origin.getSelectorsFor(Selector.Target.RESOURCES);
+                if (resourceSelectors != null && !resourceSelectors.isEmpty()) {
+                    List<Resource> resources = extractResources(document, htmlPage, origin.getSelectorsFor(Selector.Target.RESOURCES));
+                    builder.withResources(resources);
+                }
+            } catch (IOException | RuntimeException e) {
+                logger.warn("failed to process html page document", e);
+            }
         }
         return builder.build();
     }
@@ -123,8 +129,7 @@ public class Crawler implements AutoCloseable {
         try {
             Script script = scriptManager.parse(selector.getWhen());
             htmlPage.getMetadata().forEach(script::setProperty);
-            boolean result = (boolean) script.run();
-            return result;
+            return (boolean) script.run();
         } catch (Exception ignored) {
             return false;
         }

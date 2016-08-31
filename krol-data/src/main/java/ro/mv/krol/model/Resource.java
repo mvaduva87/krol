@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import ro.mv.krol.util.Args;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -14,15 +15,23 @@ import java.util.Map;
 public class Resource extends Link {
 
     @JsonProperty
+    private final Date timestamp;
+
+    @JsonProperty
     private final String locator;
 
-    private Resource(String url, Map<String, String> metadata, String locator) {
+    private Resource(String url, Map<String, String> metadata, Date timestamp, String locator) {
         super(url, metadata);
         this.locator = Args.notEmpty(locator, "locator");
+        this.timestamp = Args.notNull(timestamp, "timestamp");
     }
 
-    private Resource(Link link, String locator) {
-        this(link.getUrl(), link.getMetadata(), locator);
+    private Resource(Link link, Date timestamp, String locator) {
+        this(link.getUrl(), link.getMetadata(), timestamp, locator);
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
     }
 
     public String getLocator() {
@@ -34,6 +43,7 @@ public class Resource extends Link {
 
         private String url;
         private Map<String, String> metadata;
+        private Date timestamp;
         private String locator;
 
         public Builder withUrl(String url) {
@@ -46,13 +56,18 @@ public class Resource extends Link {
             return this;
         }
 
+        public Builder withTimestamp(Date timestamp) {
+            this.timestamp = timestamp;
+            return this;
+        }
+
         public Builder withLocator(String locator) {
             this.locator = locator;
             return this;
         }
 
         public Resource build() {
-            return new Resource(url, metadata, locator);
+            return new Resource(url, metadata, timestamp, locator);
         }
     }
 
