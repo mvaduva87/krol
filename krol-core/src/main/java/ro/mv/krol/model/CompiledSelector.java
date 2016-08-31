@@ -18,7 +18,7 @@ public class CompiledSelector extends Selector {
         this.whenScript = whenScript;
     }
 
-    public boolean pass(Selector selector, Map<String, String> metadata) {
+    public boolean pass(Map<String, String> metadata) {
         if (whenScript == null) {
             return true;
         }
@@ -32,7 +32,7 @@ public class CompiledSelector extends Selector {
         }
     }
 
-    public static CompiledSelector compile(Selector selector, ScriptManager scriptManager) throws ScriptCompileException {
+    static CompiledSelector compile(Selector selector, ScriptManager scriptManager) throws ScriptCompileException {
         Script whenScript = null;
         if (selector.getWhen() != null && !selector.getWhen().isEmpty()) {
             whenScript = scriptManager.parse(selector.getWhen());

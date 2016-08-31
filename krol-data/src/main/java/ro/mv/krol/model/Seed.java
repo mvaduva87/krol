@@ -55,15 +55,6 @@ public class Seed {
         return metadata;
     }
 
-    public boolean canExtract() {
-        if (selectors == null || selectors.isEmpty()) {
-            return false;
-        }
-        List<Selector> linkSelectors = selectors.get(Selector.Target.LINKS);
-        List<Selector> resourceSelectors = selectors.get(Selector.Target.RESOURCES);
-        return ((linkSelectors == null || linkSelectors.isEmpty()) && (resourceSelectors == null || resourceSelectors.isEmpty()));
-    }
-
     public static Builder builder() {
         return new Builder();
     }
