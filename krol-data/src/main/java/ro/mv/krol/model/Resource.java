@@ -15,19 +15,23 @@ import java.util.Map;
 public class Resource extends Link {
 
     @JsonProperty
+    private final String contentType;
+
+    @JsonProperty
     private final Date timestamp;
 
     @JsonProperty
     private final String locator;
 
-    private Resource(String url, Map<String, String> metadata, Date timestamp, String locator) {
+    private Resource(String url, Map<String, String> metadata, String contentType, Date timestamp, String locator) {
         super(url, metadata);
+        this.contentType = Args.notEmpty(contentType, "contentType");
         this.locator = Args.notEmpty(locator, "locator");
         this.timestamp = Args.notNull(timestamp, "timestamp");
     }
 
-    private Resource(Link link, Date timestamp, String locator) {
-        this(link.getUrl(), link.getMetadata(), timestamp, locator);
+    public String getContentType() {
+        return contentType;
     }
 
     public Date getTimestamp() {
@@ -43,6 +47,7 @@ public class Resource extends Link {
 
         private String url;
         private Map<String, String> metadata;
+        private String contentType;
         private Date timestamp;
         private String locator;
 
@@ -53,6 +58,11 @@ public class Resource extends Link {
 
         public Builder withMetadata(Map<String, String> metadata) {
             this.metadata = metadata;
+            return this;
+        }
+
+        public Builder withContentType(String contentType) {
+            this.contentType = contentType;
             return this;
         }
 
@@ -67,7 +77,7 @@ public class Resource extends Link {
         }
 
         public Resource build() {
-            return new Resource(url, metadata, timestamp, locator);
+            return new Resource(url, metadata, contentType, timestamp, locator);
         }
     }
 
