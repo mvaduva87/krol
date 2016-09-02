@@ -54,7 +54,7 @@ public class ResourceStorage {
     private Resource createResourceFrom(Link resourceLink, DataContent dataContent) {
         return new Resource.Builder()
                 .withUrl(resourceLink.getUrl())
-                .withTimestamp(dataContent.timstamp)
+                .withTimestamp(dataContent.timestamp)
                 .withMetadata(resourceLink.getMetadata())
                 .withContentType(dataContent.contentType)
                 .withLocator(dataContent.locator)
@@ -87,7 +87,7 @@ public class ResourceStorage {
                 .withType(StoredType.RESOURCE)
                 .withContentType(dataContent.contentType)
                 .withCharset(dataContent.charset)
-                .withTimestamp(dataContent.timstamp)
+                .withTimestamp(dataContent.timestamp)
                 .withMetadata(resourceLink.getMetadata())
                 .withName(name)
                 .build();
@@ -116,7 +116,7 @@ public class ResourceStorage {
         final String contentType;
         final Charset charset;
         final byte[] data;
-        final Date timstamp = new Date();
+        final Date timestamp = new Date();
         String locator;
 
         DataContent(String contentType, Charset charset, byte[] data) {
