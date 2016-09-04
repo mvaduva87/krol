@@ -34,10 +34,10 @@ import static org.hamcrest.Matchers.*;
 /**
  * Created by mihai.vaduva on 04/09/2016.
  */
-public class KrolIT {
+public class KrolTest {
 
     private static final String ROOT_DIR_PATH = "archive";
-    private static final URL pageURL = KrolIT.class.getResource("/page/test.html");
+    private static final URL pageURL = KrolTest.class.getResource("/page/test.html");
 
     private Crawler crawler;
     private Seed seed;
