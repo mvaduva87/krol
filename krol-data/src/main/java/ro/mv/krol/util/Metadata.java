@@ -9,6 +9,7 @@ import java.util.Map;
 public class Metadata {
 
     public static final String FIELD_SCRIPT = "x-script";
+    public static final String FIELD_SELECTOR = "selector";
 
     public static String getScriptFrom(Map<String, String> metadata) {
         if (metadata == null || metadata.isEmpty()) {

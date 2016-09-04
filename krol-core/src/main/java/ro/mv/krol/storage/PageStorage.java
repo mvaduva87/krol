@@ -1,7 +1,7 @@
 package ro.mv.krol.storage;
 
-import ro.mv.krol.browser.HtmlPage;
 import org.apache.commons.codec.digest.DigestUtils;
+import ro.mv.krol.browser.HtmlPage;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -28,7 +28,9 @@ public class PageStorage {
         Map<StoredType, String> locatorMap = new LinkedHashMap<>();
         String name = generateNameFor(htmlPage);
         locatorMap.put(StoredType.SOURCE, storeContent(htmlPage, name));
-        locatorMap.put(StoredType.SCREENSHOT, storeScreenshot(htmlPage, name));
+        if (htmlPage.getScreenshot() != null) {
+            locatorMap.put(StoredType.SCREENSHOT, storeScreenshot(htmlPage, name));
+        }
         return locatorMap;
     }
 

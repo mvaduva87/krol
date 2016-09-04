@@ -2,6 +2,7 @@ package ro.mv.krol.extract;
 
 import ro.mv.krol.model.Link;
 import ro.mv.krol.model.Selector;
+import ro.mv.krol.util.Metadata;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +18,7 @@ public class LinkExtractor {
                 .map(value -> Link.builder()
                         .withUrl(value)
                         .withMetadata(selector.getMetadata())
-                        .putMetadata("selector", selector.getName())
+                        .putMetadata(Metadata.FIELD_SELECTOR, selector.getName())
                         .build())
                 .collect(Collectors.toList());
     }
