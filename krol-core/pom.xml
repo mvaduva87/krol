@@ -17,6 +17,11 @@
             <artifactId>krol-data</artifactId>
         </dependency>
         <dependency>
+            <groupId>ro.mv.krol</groupId>
+            <artifactId>krol-data-fs</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-api</artifactId>
         </dependency>

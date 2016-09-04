@@ -35,7 +35,7 @@ public class CompiledSeed extends Seed {
         if (compiledSelectors == null || compiledSelectors.isEmpty()) {
             return false;
         }
-        for (List<CompiledSelector> selectorList: compiledSelectors.values()) {
+        for (List<CompiledSelector> selectorList : compiledSelectors.values()) {
             if (selectorList != null && !selectorList.isEmpty()) {
                 return true;
             }
@@ -85,11 +85,13 @@ public class CompiledSeed extends Seed {
         Builder builder = new Builder();
         builder.withSeed(seed);
         builder.withCrawlScript(compileScriptOf(seed, scriptManager));
-        for (Selector.Target target : seed.getSelectors().keySet()) {
-            List<Selector> selectors = seed.getSelectorsFor(target);
-            if (selectors != null && !selectors.isEmpty()) {
-                for (Selector selector : selectors) {
-                    builder.withCompiledSelector(target, CompiledSelector.compile(selector, scriptManager));
+        if (seed.getSelectors() != null && !seed.getSelectors().isEmpty()) {
+            for (Selector.Target target : seed.getSelectors().keySet()) {
+                List<Selector> selectors = seed.getSelectorsFor(target);
+                if (selectors != null && !selectors.isEmpty()) {
+                    for (Selector selector : selectors) {
+                        builder.withCompiledSelector(target, CompiledSelector.compile(selector, scriptManager));
+                    }
                 }
             }
         }

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test page</title>
+
+    <script>
+        function addLinks(count) {
+            var ul = document.querySelector('#linksContainer > ul');
+            for (var i=0;i<count;i++) {
+                var li = document.createElement('li');
+                var link = document.createElement('a');
+                link.href = '/child' + i;
+                var t = document.createTextNode('Child-' + i);
+                link.appendChild(t);
+                li.appendChild(link);
+                ul.appendChild(li);
+            }
+        }
+    </script>
+
+</head>
+<body>
+<h1>Test page</h1>
+
+<img id="main-image" src="test.gif">
+
+<button id="linksBtn" onclick="addLinks(10)">Add links</button>
+
+<div id="linksContainer">
+    <ul>
+    </ul>
+</div>
+
+</body>
+</html>

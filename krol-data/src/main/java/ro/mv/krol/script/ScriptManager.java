@@ -19,19 +19,11 @@ public class ScriptManager {
 
     public Script load(String urlString) throws ScriptCompileException {
         try {
-            URL url = createScriptURLFrom(urlString);
+            URL url = new URL(urlString);
             return shell.parse(url.toURI());
         } catch (CompilationFailedException | IOException | URISyntaxException e) {
             throw new ScriptCompileException(urlString, e);
         }
-    }
-
-    private URL createScriptURLFrom(String urlString) throws MalformedURLException {
-        if (urlString.startsWith("classpath:")) {
-            String classpathLocation = urlString.substring(10);
-            return getClass().getResource(classpathLocation);
-        }
-        return new URL(urlString);
     }
 
     public Script load(URL url) throws ScriptCompileException {

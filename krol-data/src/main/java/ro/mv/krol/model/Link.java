@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import ro.mv.krol.util.Args;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -49,20 +49,27 @@ public class Link {
         }
 
         public Builder withMetadata(Map<String, String> metadata) {
-            if (this.metadata != null) {
+            if (metadata != null && !metadata.isEmpty()) {
+                if (this.metadata == null) {
+                    prepareMetadata();
+                }
                 this.metadata.putAll(metadata);
-            } else {
-                this.metadata = metadata;
             }
             return this;
         }
 
         public Builder putMetadata(String key, String value) {
             if (this.metadata == null) {
-                this.metadata = new LinkedHashMap<>();
+                prepareMetadata();
             }
             this.metadata.put(key, value);
             return this;
+        }
+
+        private synchronized void prepareMetadata() {
+            if (metadata == null) {
+                metadata = new HashMap<>();
+            }
         }
 
         public Link build() {
