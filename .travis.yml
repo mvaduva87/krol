@@ -1,8 +1,5 @@
 language: java
 
-addons:
-  sonarqube: true
-
 sudo: false
 
 jdk:
