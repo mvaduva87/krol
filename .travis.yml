@@ -12,6 +12,13 @@ branches:
   only:
     - master
 
+env:
+  global:
+    - secure: "OSECAHIjMPSdhGHL1A47hD/5DRPzBoiePE5/Na461E9qfDcgvTtyfzVD2GXzUKkOiT3iyOxSMr2NSHnrO87hiclYXFCk0o6m9Iv/8rwDavSrxjm6YZfJxdqRtHlfZSIuLkjym6VposU8wx4zCgyExIvcizbtBqwB2cPIdv/h3CQ4Lsr2P6zUL3js9MXhh4umeiNAfD1tUuidJp9jwKcgmx900QU3G6I5xipDX8sbWZHtRj7rcMVyQUNi46WoDHO+QGKh5fPjbwaTJmiTeOWwm260Gs37VzGXXthLKzpOhDd7Tiqz7eK3o9aweLWqtXcCXVY8BMF+4XIhqQiS7YX4ui6/BQReNjZHL4OwIBA+3v3MTE+Ckz6nAhF+WI6LThtEG4oGaWj11ZYdx6+OqHqrvuUhFwQGRKXgkOagTATL9MAMmcwpt5xA955DeFh2D6PNOWAP3K1iemVvQ1uE0WVWoZYEf0syGU893Jwin5vdUdNHb3wiabPIz+qBibEjdzPm1ZAfLFuMRYLjkywpWhMsfZgyDOm40QzpLDgjaUMs53NFvtqlvuMoAriGfSsUr+yZ7Zz6KZ5a5vu8TvuyzID39QRSDJecqHA3R734oX6nb7xwHtucRp2/jhUXQEJJOG6cGzduSQ21unjIQKx90mAX5A5uBgpku6WI05SbcMANVsk="
+
+script:
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.login=$SONAR_TOKEN
+
 notifications:
   email:
     - mvaduva87@gmail.com
