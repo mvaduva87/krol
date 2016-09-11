@@ -41,7 +41,7 @@ public class Extractor {
         Document document = documentFactory.createFrom(baseURL, htmlPage.getSource());
         Map<Selector.Target, List<Link>> linkMap = new HashMap<>();
         seed.getCompiledSelectors().forEach((target, compiledSelectors) -> {
-            if (compiledSelectors == null || compiledSelectors.isEmpty()) {
+            if (compiledSelectors == null ||  compiledSelectors.isEmpty()) {
                 return;
             }
             linkMap.put(target, extract(document, htmlPage, compiledSelectors));
