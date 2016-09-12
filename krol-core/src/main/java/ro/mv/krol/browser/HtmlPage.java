@@ -1,5 +1,6 @@
 package ro.mv.krol.browser;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import ro.mv.krol.util.Args;
 
 import java.net.URL;
@@ -14,6 +15,7 @@ import java.util.Map;
 public class HtmlPage {
 
     private final URL url;
+    private final String urlHash;
     private final Date timestamp;
     private final Charset charset;
     private final Map<String, String> metadata;
@@ -32,10 +34,15 @@ public class HtmlPage {
         this.screenshot = screenshot;
         this.charset = Args.notNull(charset, "charset");
         this.metadata = metadata;
+        this.urlHash = DigestUtils.md5Hex(url.toExternalForm());
     }
 
     public URL getUrl() {
         return url;
+    }
+
+    public String getUrlHash() {
+        return urlHash;
     }
 
     public Date getTimestamp() {

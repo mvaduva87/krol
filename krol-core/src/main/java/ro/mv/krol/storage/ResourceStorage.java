@@ -27,12 +27,10 @@ public class ResourceStorage {
 
     private static final Charset DEFAULT_CHARSET = Charset.forName("US-ASCII");
     private final Storage storage;
-    private final ResourceCache resourceCache;
 
     @Inject
-    public ResourceStorage(Storage storage, ResourceCache resourceCache) {
+    public ResourceStorage(Storage storage) {
         this.storage = Args.notNull(storage, "storage");
-        this.resourceCache = Args.notNull(resourceCache, "resourceCache");
     }
 
     public Resource store(Link resourceLink) throws IOException {
