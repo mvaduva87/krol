@@ -41,7 +41,7 @@ public class ResourceStorage {
             dataContent = fetchDirectDataFrom(urlString);
         }
         String locator;
-        StorageKey storageKey = createKeyFor(resourceLink, timestamp);
+        StorageKey storageKey = createKeyFor(resourceLink, timestamp, dataContent.contentType);
         try (InputStream stream = new ByteArrayInputStream(dataContent.data)) {
             locator = storage.write(storageKey, stream);
         }
@@ -54,11 +54,12 @@ public class ResourceStorage {
                 .build();
     }
 
-    private StorageKey createKeyFor(Link resourceLink, Date timestamp) {
+    private StorageKey createKeyFor(Link resourceLink, Date timestamp, String contentType) {
         return StorageKey.builder()
                 .withType(StoredType.RESOURCE)
                 .withUrl(resourceLink.getUrl())
                 .withTimestamp(timestamp)
+                .withContentType(contentType)
                 .withMetadata(resourceLink.getMetadata())
                 .build();
     }

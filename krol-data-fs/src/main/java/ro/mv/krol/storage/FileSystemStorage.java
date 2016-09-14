@@ -30,15 +30,6 @@ public class FileSystemStorage implements Storage {
     }
 
     @Override
-    public String write(StorageKey key, Reader source) throws IOException {
-        File file = prepareFileFor(key);
-        try (Writer dest = new BufferedWriter(new FileWriter(file))) {
-            IOUtils.copy(source, dest);
-        }
-        return file.getPath();
-    }
-
-    @Override
     public String write(StorageKey key, InputStream source) throws IOException {
         File file = prepareFileFor(key);
         try (OutputStream dest = new BufferedOutputStream(new FileOutputStream(file))) {

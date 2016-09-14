@@ -4,7 +4,9 @@ import ro.mv.krol.browser.HtmlPage;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -35,11 +37,10 @@ public class PageStorage {
                 .withType(StoredType.SOURCE)
                 .withUrl(htmlPage.getUrl().toExternalForm())
                 .withTimestamp(htmlPage.getTimestamp())
+                .withContentType("text/html")
                 .withMetadata(htmlPage.getMetadata())
                 .build();
-        try (Reader reader = new StringReader(htmlPage.getSource())) {
-            return storage.write(key, reader);
-        }
+        return storage.write(key, htmlPage.getSource(), htmlPage.getCharset());
     }
 
     private String storeScreenshot(HtmlPage htmlPage) throws IOException {

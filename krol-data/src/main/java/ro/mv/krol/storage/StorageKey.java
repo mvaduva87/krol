@@ -13,15 +13,18 @@ public class StorageKey {
     private final StoredType type;
     private final String url;
     private final Date timestamp;
+    private final String contentType;
     private final Map<String, String> metadata;
 
     private StorageKey(StoredType type,
                        String url,
                        Date timestamp,
+                       String contentType,
                        Map<String, String> metadata) {
         this.type = Args.notNull(type, "type");
         this.url = Args.notEmpty(url, "url");
         this.timestamp = Args.notNull(timestamp, "timestamp");
+        this.contentType = contentType;
         this.metadata = metadata;
     }
 
@@ -37,6 +40,10 @@ public class StorageKey {
         return timestamp;
     }
 
+    public String getContentType() {
+        return contentType;
+    }
+
     public Map<String, String> getMetadata() {
         return metadata;
     }
@@ -49,6 +56,7 @@ public class StorageKey {
         private StoredType type;
         private String url;
         private Date timestamp;
+        private String contentType;
         private Map<String, String> metadata;
 
         public Builder withType(StoredType type) {
@@ -66,13 +74,18 @@ public class StorageKey {
             return this;
         }
 
+        public Builder withContentType(String contentType) {
+            this.contentType = contentType;
+            return this;
+        }
+
         public Builder withMetadata(Map<String, String> metadata) {
             this.metadata = metadata;
             return this;
         }
 
         public StorageKey build() {
-            return new StorageKey(type, url, timestamp, metadata);
+            return new StorageKey(type, url, timestamp, contentType, metadata);
         }
     }
 }
