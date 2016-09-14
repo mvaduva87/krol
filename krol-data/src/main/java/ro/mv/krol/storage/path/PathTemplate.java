@@ -1,8 +1,9 @@
-package ro.mv.krol.util;
+package ro.mv.krol.storage.path;
 
-import ro.mv.krol.storage.StoredType;
 import org.apache.commons.jexl2.*;
 import ro.mv.krol.storage.StorageKey;
+import ro.mv.krol.storage.StoredType;
+import ro.mv.krol.util.Args;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,6 +30,7 @@ public class PathTemplate {
         jexlEngine = new JexlEngine();
         Map<String, Object> functions = new HashMap<>();
         functions.put("date", new DateHelper());
+        functions.put("hash", new HashHelper());
         jexlEngine.setFunctions(functions);
     }
 
@@ -51,7 +53,8 @@ public class PathTemplate {
 
     private JexlContext createEvaluationContextFor(StorageKey key) {
         Map<String, Object> params = new HashMap<>();
-        params.put("name", key.getName());
+        params.put("url", key.getUrl());
+        params.put("type", key.getType());
         params.put("timestamp", key.getTimestamp());
         params.put("metadata", key.getMetadata());
         return new ReadonlyContext(new MapContext(params));

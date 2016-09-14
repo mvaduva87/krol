@@ -33,7 +33,7 @@ public class PageStorage {
     private String storeContent(HtmlPage htmlPage) throws IOException {
         StorageKey key = StorageKey.builder()
                 .withType(StoredType.SOURCE)
-                .withName(htmlPage.getUrlHash() + ".html")
+                .withUrl(htmlPage.getUrl().toExternalForm())
                 .withTimestamp(htmlPage.getTimestamp())
                 .withMetadata(htmlPage.getMetadata())
                 .build();
@@ -45,7 +45,7 @@ public class PageStorage {
     private String storeScreenshot(HtmlPage htmlPage) throws IOException {
         StorageKey key = StorageKey.builder()
                 .withType(StoredType.SCREENSHOT)
-                .withName(htmlPage.getUrlHash() + ".png")
+                .withUrl(htmlPage.getUrl().toExternalForm())
                 .withTimestamp(htmlPage.getTimestamp())
                 .withMetadata(htmlPage.getMetadata())
                 .build();
@@ -53,23 +53,4 @@ public class PageStorage {
             return storage.write(key, stream);
         }
     }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-
-        private Storage storage;
-
-        public Builder withStorage(Storage storage) {
-            this.storage = storage;
-            return this;
-        }
-
-        public PageStorage build() {
-            return new PageStorage(storage);
-        }
-    }
-
 }

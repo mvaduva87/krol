@@ -3,7 +3,6 @@ package ro.mv.krol.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import org.apache.commons.codec.digest.DigestUtils;
 import ro.mv.krol.util.Args;
 
 import java.util.HashMap;
@@ -18,23 +17,16 @@ public class Link {
     @JsonProperty
     private final String url;
 
-    private final String urlHash;
-
     @JsonProperty
     private final Map<String, String> metadata;
 
     protected Link(String url, Map<String, String> metadata) {
         this.url = Args.notEmpty(url, "url");
         this.metadata = metadata;
-        this.urlHash = DigestUtils.md5Hex(url);
     }
 
     public String getUrl() {
         return url;
-    }
-
-    public String getUrlHash() {
-        return urlHash;
     }
 
     public Map<String, String> getMetadata() {

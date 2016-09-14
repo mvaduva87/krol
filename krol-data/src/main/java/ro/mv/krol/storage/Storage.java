@@ -13,6 +13,4 @@ public interface Storage {
 
     String write(StorageKey key, InputStream source) throws IOException;
 
-    String locateBy(StorageKey key) throws IOException;
-
 }

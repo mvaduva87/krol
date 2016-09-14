@@ -11,16 +11,16 @@ import java.util.Map;
 public class StorageKey {
 
     private final StoredType type;
-    private final String name;
+    private final String url;
     private final Date timestamp;
     private final Map<String, String> metadata;
 
     private StorageKey(StoredType type,
-                       String name,
+                       String url,
                        Date timestamp,
                        Map<String, String> metadata) {
         this.type = Args.notNull(type, "type");
-        this.name = Args.notEmpty(name, "name");
+        this.url = Args.notEmpty(url, "url");
         this.timestamp = Args.notNull(timestamp, "timestamp");
         this.metadata = metadata;
     }
@@ -29,8 +29,8 @@ public class StorageKey {
         return type;
     }
 
-    public String getName() {
-        return name;
+    public String getUrl() {
+        return url;
     }
 
     public Date getTimestamp() {
@@ -47,7 +47,7 @@ public class StorageKey {
 
     public static class Builder {
         private StoredType type;
-        private String name;
+        private String url;
         private Date timestamp;
         private Map<String, String> metadata;
 
@@ -56,8 +56,8 @@ public class StorageKey {
             return this;
         }
 
-        public Builder withName(String name) {
-            this.name = name;
+        public Builder withUrl(String url) {
+            this.url = url;
             return this;
         }
 
@@ -72,7 +72,7 @@ public class StorageKey {
         }
 
         public StorageKey build() {
-            return new StorageKey(type, name, timestamp, metadata);
+            return new StorageKey(type, url, timestamp, metadata);
         }
     }
 }

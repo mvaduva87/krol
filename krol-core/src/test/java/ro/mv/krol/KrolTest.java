@@ -17,10 +17,8 @@ import ro.mv.krol.extract.jsoup.JsoupDocumentFactory;
 import ro.mv.krol.model.*;
 import ro.mv.krol.script.ScriptManager;
 import ro.mv.krol.storage.*;
-import ro.mv.krol.storage.cache.MemoryResourceCache;
-import ro.mv.krol.storage.cache.ResourceCache;
+import ro.mv.krol.storage.path.PathTemplate;
 import ro.mv.krol.util.Metadata;
-import ro.mv.krol.util.PathTemplate;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,8 +48,7 @@ public class KrolTest {
         DocumentFactory documentFactory = new JsoupDocumentFactory();
         Extractor extractor = new Extractor(documentFactory, new LinkExtractor());
         PageStorage pageStorage = new PageStorage(storage);
-        ResourceCache resourceCache = new MemoryResourceCache(100);
-        ResourceStorage resourceStorage = new ResourceStorage(storage, resourceCache);
+        ResourceStorage resourceStorage = new ResourceStorage(storage);
         PageProcessor pageProcessor = new PageProcessor(extractor, pageStorage, resourceStorage);
         crawler = new Crawler(browser, scriptManager, pageProcessor);
         seed = prepareSeed();
@@ -71,9 +68,9 @@ public class KrolTest {
 
     private Storage prepareStorage() {
         Map<StoredType, String> templateMap = new HashMap<>();
-        templateMap.put(StoredType.SOURCE, "pages/{date:format(timestamp, 'yyyy-MM-dd')}/{name}");
-        templateMap.put(StoredType.SCREENSHOT, "pages/{date:format(timestamp, 'yyyy-MM-dd')}/{name}");
-        templateMap.put(StoredType.RESOURCE, "resources/{name}");
+        templateMap.put(StoredType.SOURCE, "pages/{date:format(timestamp, 'yyyy-MM-dd')}/{hash:md5(url)}.html");
+        templateMap.put(StoredType.SCREENSHOT, "pages/{date:format(timestamp, 'yyyy-MM-dd')}/{hash:md5(url)}.png");
+        templateMap.put(StoredType.RESOURCE, "resources/{hash:md5(url)}.res");
         PathTemplate pathTemplate = new PathTemplate(templateMap);
         return new FileSystemStorage(ROOT_DIR_PATH, pathTemplate);
     }
