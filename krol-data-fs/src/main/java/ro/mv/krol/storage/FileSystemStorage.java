@@ -3,7 +3,7 @@ package ro.mv.krol.storage;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import ro.mv.krol.util.Args;
-import ro.mv.krol.util.PathTemplate;
+import ro.mv.krol.storage.path.PathTemplate;
 
 import javax.inject.Inject;
 import javax.inject.Named;

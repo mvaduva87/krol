@@ -2,7 +2,6 @@ package ro.mv.krol.storage;
 
 import ro.mv.krol.util.Args;
 
-import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Map;
 
@@ -12,22 +11,16 @@ import java.util.Map;
 public class StorageKey {
 
     private final StoredType type;
-    private final String contentType;
-    private final Charset charset;
-    private final String name;
+    private final String url;
     private final Date timestamp;
     private final Map<String, String> metadata;
 
     private StorageKey(StoredType type,
-                       String contentType,
-                       Charset charset,
-                       String name,
+                       String url,
                        Date timestamp,
                        Map<String, String> metadata) {
         this.type = Args.notNull(type, "type");
-        this.contentType = Args.notEmpty(contentType, "contentType");
-        this.charset = Args.notNull(charset, "charset");
-        this.name = Args.notEmpty(name, "name");
+        this.url = Args.notEmpty(url, "url");
         this.timestamp = Args.notNull(timestamp, "timestamp");
         this.metadata = metadata;
     }
@@ -36,16 +29,8 @@ public class StorageKey {
         return type;
     }
 
-    public String getContentType() {
-        return contentType;
-    }
-
-    public Charset getCharset() {
-        return charset;
-    }
-
-    public String getName() {
-        return name;
+    public String getUrl() {
+        return url;
     }
 
     public Date getTimestamp() {
@@ -62,9 +47,7 @@ public class StorageKey {
 
     public static class Builder {
         private StoredType type;
-        private String contentType;
-        private Charset charset;
-        private String name;
+        private String url;
         private Date timestamp;
         private Map<String, String> metadata;
 
@@ -73,18 +56,8 @@ public class StorageKey {
             return this;
         }
 
-        public Builder withContentType(String contentType) {
-            this.contentType = contentType;
-            return this;
-        }
-
-        public Builder withCharset(Charset charset) {
-            this.charset = charset;
-            return this;
-        }
-
-        public Builder withName(String name) {
-            this.name = name;
+        public Builder withUrl(String url) {
+            this.url = url;
             return this;
         }
 
@@ -99,7 +72,7 @@ public class StorageKey {
         }
 
         public StorageKey build() {
-            return new StorageKey(type, contentType, charset, name, timestamp, metadata);
+            return new StorageKey(type, url, timestamp, metadata);
         }
     }
 }

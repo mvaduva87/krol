@@ -1,4 +1,4 @@
-package ro.mv.krol.util;
+package ro.mv.krol.storage.path;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
