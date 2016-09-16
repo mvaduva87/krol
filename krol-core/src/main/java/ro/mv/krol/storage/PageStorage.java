@@ -7,6 +7,7 @@ import javax.inject.Singleton;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -38,6 +39,7 @@ public class PageStorage {
                 .withUrl(htmlPage.getUrl().toExternalForm())
                 .withTimestamp(htmlPage.getTimestamp())
                 .withContentType("text/html")
+                .withCharset(htmlPage.getCharset())
                 .withMetadata(htmlPage.getMetadata())
                 .build();
         return storage.write(key, htmlPage.getSource(), htmlPage.getCharset());
@@ -48,6 +50,8 @@ public class PageStorage {
                 .withType(StoredType.SCREENSHOT)
                 .withUrl(htmlPage.getUrl().toExternalForm())
                 .withTimestamp(htmlPage.getTimestamp())
+                .withContentType("image/png")
+                .withCharset(Charset.forName("UTF-8"))
                 .withMetadata(htmlPage.getMetadata())
                 .build();
         try (InputStream stream = new ByteArrayInputStream(htmlPage.getScreenshot())) {

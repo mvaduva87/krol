@@ -1,6 +1,7 @@
 package ro.mv.krol.storage;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpHeaders;
 import ro.mv.krol.model.DecodedURL;
 import ro.mv.krol.model.Link;
 import ro.mv.krol.model.Resource;
@@ -23,7 +24,6 @@ import java.util.Date;
 @Singleton
 public class ResourceStorage {
 
-    private static final Charset DEFAULT_CHARSET = Charset.forName("US-ASCII");
     private final Storage storage;
 
     @Inject
@@ -32,7 +32,6 @@ public class ResourceStorage {
     }
 
     public Resource store(Link resourceLink) throws IOException {
-        Date timestamp = new Date();
         String urlString = resourceLink.getUrl();
         DataContent dataContent;
         if (URLUtils.isDataEncoded(urlString)) {
@@ -41,25 +40,27 @@ public class ResourceStorage {
             dataContent = fetchDirectDataFrom(urlString);
         }
         String locator;
-        StorageKey storageKey = createKeyFor(resourceLink, timestamp, dataContent.contentType);
+        StorageKey storageKey = createKeyFor(resourceLink, dataContent);
         try (InputStream stream = new ByteArrayInputStream(dataContent.data)) {
             locator = storage.write(storageKey, stream);
         }
         return new Resource.Builder()
                 .withUrl(urlString)
-                .withTimestamp(timestamp)
+                .withTimestamp(dataContent.timestamp)
                 .withContentType(dataContent.contentType)
                 .withLocator(locator)
+                .withCharset(dataContent.charset)
                 .withMetadata(resourceLink.getMetadata())
                 .build();
     }
 
-    private StorageKey createKeyFor(Link resourceLink, Date timestamp, String contentType) {
+    private StorageKey createKeyFor(Link resourceLink, DataContent dataContent) {
         return StorageKey.builder()
                 .withType(StoredType.RESOURCE)
                 .withUrl(resourceLink.getUrl())
-                .withTimestamp(timestamp)
-                .withContentType(contentType)
+                .withTimestamp(dataContent.timestamp)
+                .withContentType(dataContent.contentType)
+                .withCharset(dataContent.charset)
                 .withMetadata(resourceLink.getMetadata())
                 .build();
     }
@@ -75,20 +76,32 @@ public class ResourceStorage {
     private DataContent fetchDirectDataFrom(String urlString) throws IOException {
         URL url = new URL(urlString);
         URLConnection conn = url.openConnection();
-        String contentType = conn.getHeaderField("Content-Type");
+        String contentType = conn.getHeaderField(HttpHeaders.CONTENT_TYPE);
+        String contentEncoding = conn.getHeaderField(HttpHeaders.CONTENT_ENCODING);
+        Charset charset = null;
+        if (contentEncoding != null) {
+            try {
+                charset = Charset.forName(contentEncoding);
+            } catch (IllegalArgumentException ignored) {
+                // could not parse the content-encoding to a java.nio.Charset
+            }
+        }
+
         try (InputStream stream = conn.getInputStream()) {
             byte[] data = IOUtils.toByteArray(stream);
-            return new DataContent(contentType, DEFAULT_CHARSET, data);
+            return new DataContent(contentType, charset, data);
         }
     }
 
     private static class DataContent {
 
+        final Date timestamp;
         final String contentType;
         final Charset charset;
         final byte[] data;
 
         DataContent(String contentType, Charset charset, byte[] data) {
+            this.timestamp = new Date();
             this.contentType = contentType == null || contentType.isEmpty() ? "application/octet-stream" : contentType;
             this.charset = charset;
             this.data = data;
