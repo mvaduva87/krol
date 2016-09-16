@@ -1,5 +1,6 @@
 package ro.mv.krol.browser;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
@@ -7,17 +8,18 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.Map;
 
 /**
  * Created by mihai.vaduva on 09/08/2016.
  */
 @Singleton
-public class PhantomJSWebDriverFactory extends AbstractWebDriverFactory {
+public class PhantomJSWebDriverFactory implements WebDriverFactory {
+
+    private final Capabilities capabilities;
 
     @Inject
-    public PhantomJSWebDriverFactory(@Named(CONST_CAPABILITIES) Map<String, Object> rawCapabilities) {
-        super(rawCapabilities);
+    public PhantomJSWebDriverFactory(@Named(CONST_CAPABILITIES) Capabilities capabilities) {
+        this.capabilities = capabilities;
     }
 
     @Override
