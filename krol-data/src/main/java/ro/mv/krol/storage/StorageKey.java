@@ -2,6 +2,7 @@ package ro.mv.krol.storage;
 
 import ro.mv.krol.util.Args;
 
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Map;
 
@@ -14,17 +15,20 @@ public class StorageKey {
     private final String url;
     private final Date timestamp;
     private final String contentType;
+    private final Charset charset;
     private final Map<String, String> metadata;
 
     private StorageKey(StoredType type,
                        String url,
                        Date timestamp,
                        String contentType,
+                       Charset charset,
                        Map<String, String> metadata) {
         this.type = Args.notNull(type, "type");
         this.url = Args.notEmpty(url, "url");
         this.timestamp = Args.notNull(timestamp, "timestamp");
         this.contentType = contentType;
+        this.charset = charset;
         this.metadata = metadata;
     }
 
@@ -44,6 +48,10 @@ public class StorageKey {
         return contentType;
     }
 
+    public Charset getCharset() {
+        return charset;
+    }
+
     public Map<String, String> getMetadata() {
         return metadata;
     }
@@ -57,6 +65,7 @@ public class StorageKey {
         private String url;
         private Date timestamp;
         private String contentType;
+        private Charset charset;
         private Map<String, String> metadata;
 
         public Builder withType(StoredType type) {
@@ -79,13 +88,18 @@ public class StorageKey {
             return this;
         }
 
+        public Builder withCharset(Charset charset) {
+            this.charset = charset;
+            return this;
+        }
+
         public Builder withMetadata(Map<String, String> metadata) {
             this.metadata = metadata;
             return this;
         }
 
         public StorageKey build() {
-            return new StorageKey(type, url, timestamp, contentType, metadata);
+            return new StorageKey(type, url, timestamp, contentType, charset, metadata);
         }
     }
 }

@@ -13,6 +13,7 @@ import ro.mv.krol.model.Resource;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Base64;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -104,6 +105,7 @@ public class ResourceStorageTest {
         assertThat(resource.getUrl(), is(equalTo(encodedLink.getUrl())));
         assertThat(resource.getMetadata().entrySet(), is(equalTo(encodedLink.getMetadata().entrySet())));
         assertThat(resource.getContentType(), is(equalTo("image/gif")));
+        assertThat(resource.getCharset(), is(equalTo(Charset.forName("us-ascii"))));
 
         byte[] storedData = storeBuffer.toByteArray();
         assertThat(base64Data, is(equalTo(Base64.getEncoder().encodeToString(storedData))));

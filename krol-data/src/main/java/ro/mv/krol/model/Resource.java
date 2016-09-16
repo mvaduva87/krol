@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import ro.mv.krol.util.Args;
 
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Map;
 
@@ -18,20 +19,33 @@ public class Resource extends Link {
     private final String contentType;
 
     @JsonProperty
+    private final Charset charset;
+
+    @JsonProperty
     private final Date timestamp;
 
     @JsonProperty
     private final String locator;
 
-    private Resource(String url, Map<String, String> metadata, String contentType, Date timestamp, String locator) {
+    private Resource(String url,
+                     Map<String, String> metadata,
+                     String contentType,
+                     Charset charset,
+                     Date timestamp,
+                     String locator) {
         super(url, metadata);
         this.contentType = Args.notEmpty(contentType, "contentType");
+        this.charset = charset;
         this.locator = Args.notEmpty(locator, "locator");
         this.timestamp = Args.notNull(timestamp, "timestamp");
     }
 
     public String getContentType() {
         return contentType;
+    }
+
+    public Charset getCharset() {
+        return charset;
     }
 
     public Date getTimestamp() {
@@ -48,6 +62,7 @@ public class Resource extends Link {
         private String url;
         private Map<String, String> metadata;
         private String contentType;
+        private Charset charset;
         private Date timestamp;
         private String locator;
 
@@ -66,6 +81,11 @@ public class Resource extends Link {
             return this;
         }
 
+        public Builder withCharset(Charset charset) {
+            this.charset = charset;
+            return this;
+        }
+
         public Builder withTimestamp(Date timestamp) {
             this.timestamp = timestamp;
             return this;
@@ -77,7 +97,7 @@ public class Resource extends Link {
         }
 
         public Resource build() {
-            return new Resource(url, metadata, contentType, timestamp, locator);
+            return new Resource(url, metadata, contentType, charset, timestamp, locator);
         }
     }
 
