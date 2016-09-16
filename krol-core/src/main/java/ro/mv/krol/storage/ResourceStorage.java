@@ -23,7 +23,7 @@ import java.util.Date;
  */
 @Singleton
 public class ResourceStorage {
-    
+
     private final Storage storage;
 
     @Inject
@@ -79,11 +79,14 @@ public class ResourceStorage {
         String contentType = conn.getHeaderField(HttpHeaders.CONTENT_TYPE);
         String contentEncoding = conn.getHeaderField(HttpHeaders.CONTENT_ENCODING);
         Charset charset = null;
-        try {
-            charset = Charset.forName(contentEncoding);
-        } catch (RuntimeException ignored) {
-            // could not parse the content-encoding to a java.nio.Charset
+        if (contentEncoding != null) {
+            try {
+                charset = Charset.forName(contentEncoding);
+            } catch (IllegalArgumentException ignored) {
+                // could not parse the content-encoding to a java.nio.Charset
+            }
         }
+
         try (InputStream stream = conn.getInputStream()) {
             byte[] data = IOUtils.toByteArray(stream);
             return new DataContent(contentType, charset, data);
