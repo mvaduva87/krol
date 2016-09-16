@@ -8,6 +8,7 @@ import ro.mv.krol.storage.PageStorage;
 import ro.mv.krol.storage.ResourceStorage;
 import ro.mv.krol.storage.StoredType;
 import ro.mv.krol.util.Args;
+import ro.mv.krol.util.Environment;
 import ro.mv.krol.util.Metadata;
 
 import javax.inject.Inject;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by mihai.vaduva on 04/09/2016.
@@ -63,7 +65,9 @@ public class PageProcessor {
     }
 
     private List<Resource> storeResourcesFrom(List<Link> links) {
-        return links.stream()
+        boolean parallel = Environment.getCpuCount() > 1 && links.size() > 1;
+        Stream<Link> stream = parallel ? links.parallelStream() : links.stream();
+        return stream
                 .map(link -> {
                     try {
                         return resourceStorage.store(link);
