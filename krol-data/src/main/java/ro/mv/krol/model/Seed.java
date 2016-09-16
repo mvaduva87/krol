@@ -7,6 +7,7 @@ import ro.mv.krol.util.Args;
 
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -82,8 +83,21 @@ public class Seed {
         }
 
         public Builder withMetadata(Map<String, String> metadata) {
-            this.metadata = metadata;
+            if (metadata != null && !metadata.isEmpty()) {
+                prepareMetadata();
+                this.metadata.putAll(metadata);
+            }
             return this;
+        }
+
+        private void prepareMetadata() {
+            if (metadata == null) {
+                synchronized (this) {
+                    if (metadata == null) {
+                        this.metadata = new HashMap<>();
+                    }
+                }
+            }
         }
 
         public Seed build() {
